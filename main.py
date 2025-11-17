@@ -4,7 +4,6 @@ import json
 import os
 import tempfile
 
-# Import modülleri
 from pdf_reader import extract_text_from_pdf
 from summarizer import summarize_pdf, create_study_notes
 
@@ -12,14 +11,15 @@ app = FastAPI(title="AI Study Assistant", version="1.0.0")
 
 app.add_middleware(
     CORSMiddleware,
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=["*"],
-        allow_credentials=False,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
+    allow_origins=["*"],
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
+
+@app.options("/{rest_of_path:path}")
+async def preflight_handler(rest_of_path: str):
+    return {}
 
 
 @app.post("/upload-pdf")
