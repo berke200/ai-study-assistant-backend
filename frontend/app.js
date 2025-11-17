@@ -4,7 +4,7 @@
 
 console.log("AI Study Assistant Frontend Loaded");
 
-const API = "http://127.0.0.1:9000";
+const API = "https://ai-study-assistant-wber.onrender.com";
 
 // ====================================================================
 //  ELEMENTS
