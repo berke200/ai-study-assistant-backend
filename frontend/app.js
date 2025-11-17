@@ -6,6 +6,7 @@ console.log("AI Study Assistant Frontend Loaded");
 
 const API = "https://ai-study-assistant-wber.onrender.com";
 
+
 // ====================================================================
 //  ELEMENTS
 // ====================================================================
