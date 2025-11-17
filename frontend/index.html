@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Study Assistant</title>
+
+    <style>
+        :root {
+            --bg: #050509;
+            --card: #10111a;
+            --card-soft: #151626;
+            --accent: #4f77ff;
+            --accent-soft: #3247b5;
+            --border-subtle: #22243a;
+            --text-main: #f5f5ff;
+            --text-muted: #a0a3c0;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+            background: radial-gradient(circle at top, #18192f 0, #050509 40%);
+            color: var(--text-main);
+            min-height: 100vh;
+        }
+
+        .app-shell {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px 16px 40px;
+        }
+
+        /* TOPBAR */
+        .topbar {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .topbar h1 {
+            margin: 0 0 8px 0;
+            font-size: 32px;
+            background: linear-gradient(135deg, #4f77ff, #8e5bff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .topbar span {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        /* GRID */
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 900px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* CARD */
+        .card {
+            background: linear-gradient(145deg, var(--card), var(--card-soft));
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid var(--border-subtle);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.55);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.65);
+        }
+
+        .card-header h2 {
+            margin: 0 0 4px 0;
+            font-size: 20px;
+            color: #f5f5ff;
+        }
+
+        .card-header small {
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        .card-desc {
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* INPUTS */
+        input[type="file"] {
+            margin-top: 8px;
+            font-size: 14px;
+            color: var(--text-muted);
+            background: #0a0b14;
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            padding: 8px 12px;
+            width: 100%;
+        }
+
+        /* BUTTONS */
+        button {
+            padding: 10px 20px;
+            border-radius: 999px;
+            border: none;
+            cursor: pointer;
+            background: linear-gradient(135deg, var(--accent), var(--accent-soft));
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: 12px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(79, 119, 255, 0.3);
+        }
+
+        button:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(79, 119, 255, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* OUTPUT BOX */
+        .output-label {
+            margin-top: 16px;
+            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .output-box {
+            background: #060612;
+            border-radius: 12px;
+            padding: 16px;
+            border: 1px solid #272842;
+            line-height: 1.6;
+            max-height: 500px;
+            overflow-y: auto;
+            white-space: normal;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+
+        .output-box::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .output-box::-webkit-scrollbar-track {
+            background: #0a0a1a;
+            border-radius: 3px;
+        }
+
+        .output-box::-webkit-scrollbar-thumb {
+            background: #4f77ff;
+            border-radius: 3px;
+        }
+
+        .output-empty {
+            color: var(--text-muted);
+            font-style: italic;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* COLLAPSIBLE STUDY NOTES */
+        .note-section {
+            margin-bottom: 12px;
+            border: 1px solid #2a2b44;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #0c0d1b;
+            transition: all 0.3s ease;
+        }
+
+        .note-section:hover {
+            border-color: #3a3c5a;
+        }
+
+        .note-header {
+            padding: 16px 18px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            color: #c9cbff;
+            background: #131427;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.2s ease;
+        }
+
+        .note-header:hover {
+            background: #1a1b33;
+        }
+
+        .note-body {
+            padding: 16px 20px;
+            font-size: 14px;
+            line-height: 1.7;
+            color: #d4d6ff;
+            display: none;
+            background: #0a0b15;
+            border-top: 1px solid #2a2b44;
+        }
+
+        .note-body.show {
+            display: block;
+        }
+
+        .note-arrow {
+            font-size: 14px;
+            opacity: 0.7;
+            transition: transform 0.3s ease;
+        }
+
+        .note-open .note-arrow {
+            transform: rotate(90deg);
+        }
+
+        /* Markdown Styling */
+        .output-box h1, .output-box h2, .output-box h3 {
+            color: #f5f5ff;
+            margin-top: 1.5em;
+            margin-bottom: 0.5em;
+        }
+
+        .output-box h1 {
+            font-size: 1.5em;
+            border-bottom: 1px solid #333;
+            padding-bottom: 0.3em;
+        }
+
+        .output-box h2 {
+            font-size: 1.3em;
+        }
+
+        .output-box h3 {
+            font-size: 1.1em;
+        }
+
+        .output-box ul, .output-box ol {
+            padding-left: 2em;
+            margin: 1em 0;
+        }
+
+        .output-box li {
+            margin: 0.5em 0;
+        }
+
+        .output-box code {
+            background: #1a1a2a;
+            padding: 0.2em 0.4em;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .output-box pre {
+            background: #1a1a2a;
+            padding: 1em;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 1em 0;
+        }
+
+        .output-box blockquote {
+            border-left: 4px solid #4f77ff;
+            padding-left: 1em;
+            margin: 1em 0;
+            color: #a0a3c0;
+        }
+
+        /* Loading Spinner */
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Status Messages */
+        .status-message {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+
+        .status-success {
+            background: rgba(31, 138, 75, 0.2);
+            border: 1px solid #1f8a4b;
+            color: #3dcf7a;
+        }
+
+        .status-error {
+            background: rgba(220, 53, 69, 0.2);
+            border: 1px solid #dc3545;
+            color: #ff6b7a;
+        }
+
+        .status-info {
+            background: rgba(13, 110, 253, 0.2);
+            border: 1px solid #0d6efd;
+            color: #4dabf7;
+        }
+    </style>
+
+    <!-- markdown converter -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+
+<body>
+    <div class="app-shell">
+        <div class="topbar">
+            <h1>AI Study Assistant</h1>
+            <span>Turn PDFs into summaries and study notes</span>
+        </div>
+
+        <div class="grid">
+            <!-- SUMMARY -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>PDF → Summary</h2>
+                    <small>Quick overview</small>
+                </div>
+
+                <p class="card-desc">Upload a PDF to generate a clean, concise summary of the content.</p>
+
+                <input type="file" id="summaryPdf" accept="application/pdf">
+                <button id="summaryBtn">
+                    <span class="btn-text">Summarize PDF</span>
+                </button>
+
+                <div class="output-label">Summary</div>
+                <div id="summaryOutput" class="output-box">
+                    <div class="output-empty">No summary generated yet. Upload a PDF and click the button above.</div>
+                </div>
+            </div>
+
+            <!-- STUDY NOTES -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>PDF → Study Notes</h2>
+                    <small>Structured, readable notes</small>
+                </div>
+
+                <p class="card-desc">Upload a PDF and get well-organized, exam-ready study notes.</p>
+
+                <input type="file" id="studyPdf" accept="application/pdf">
+                <button id="studyBtn">
+                    <span class="btn-text">Generate Study Notes</span>
+                </button>
+
+                <div class="output-label">Study Notes</div>
+                <div id="studyOutput" class="output-box">
+                    <div class="output-empty">No notes generated yet. Upload a PDF and click the button above.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+/* ---- DARK MODE BASE ---- */
+body {
+    font-family: Arial, sans-serif;
+    background: #0f0f0f;
+    color: #e6e6e6;
+    margin: 0;
+    padding: 20px;
+}
+
+/* ---- SECTIONS / CARDS ---- */
+section {
+    background: #1a1a1a;
+    padding: 20px;
+    margin: 25px auto;
+    width: 80%;
+    max-width: 700px;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(255,255,255,0.05);
+    border: 1px solid #2a2a2a;
+}
+
+/* ---- TITLES ---- */
+h1, h2 {
+    color: #ffffff;
+    text-align: center;
+}
+
+/* ---- BUTTONS ---- */
+button {
+    padding: 12px 20px;
+    background: #0077ff;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 15px;
+    margin-top: 10px;
+    transition: 0.2s;
+}
+
+button:hover {
+    background: #005fcc;
+}
+
+/* ---- INPUTS / FILES ---- */
+input[type="file"], textarea {
+    margin-top: 10px;
+    width: 100%;
+    color: #ddd;
+}
+
+textarea {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #333;
+    background: #121212;
+    resize: vertical;
+}
+
+/* ---- OUTPUT BOXES ---- */
+pre {
+    background: #111;
+    padding: 15px;
+    border-radius: 8px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    margin-top: 20px;
+    border: 1px solid #222;
+    color: #e6e6e6;
+}
+
+#summaryOutput, #notesOutput {
+    max-height: 300px;
+    overflow-y: auto;
+}
